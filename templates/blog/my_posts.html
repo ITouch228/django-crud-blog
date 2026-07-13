@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Мои посты</h1>
+        {% if user.is_authenticated %}
+            <a href="{% url 'blog:post_create' %}" class="btn btn-primary">Создать пост</a>
+        {% endif %}
+    </div>
+
+    {% if page_obj %}
+        {% regroup page_obj by status as post_list %}
+        {% for group in post_list %}
+            <h4 class="mt-4 mb-3">
+                {% if group.grouper == 'published' %}
+                    <span class="badge bg-success">Опубликованные</span>
+                {% else %}
+                    <span class="badge bg-secondary">Черновики</span>
+                {% endif %}
+            </h4>
+            <div class="row">
+                {% for post in group.list %}
+                    <div class="col-12">
+                        <div class="card mb-3 shadow {% if post.status == 'draft' %}border-secondary bg-light{% else %}border-0{% endif %}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h3 class="card-title h5">
+                                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none text-dark">
+                                            {{ post.title }}
+                                        </a>
+                                    </h3>
+                                    {# Бейдж со статусом #}
+                                    {% if post.status == 'draft' %}
+                                        <span class="badge bg-secondary text-dark">Черновик</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Опубликовано</span>
+                                    {% endif %}
+                                </div>
+                                <p class="card-text text-muted small">
+                                    {{ post.published_at|date:"d.m.Y" }}
+                                </p>
+                                <p class="card-text">
+                                    {{ post.content|truncatechars:150 }}
+                                </p>
+                                <div class="mt-3">
+                                    <a href="{% url 'blog:post_edit' post.slug %}" class="btn btn-outline-primary btn-sm">Редактировать</a>
+                                    <a href="{% url 'blog:post_delete' post.slug %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Навигация по страницам">
+                <ul class="pagination pagination-sm justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">‹</a></li>
+                    {% endif %}
+                    <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">›</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <p class="text-muted">У вас пока нет постов. <a href="{% url 'blog:post_create' %}">Создать первый?</a></p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <p class="card-subtitle mb-3 text-muted">
+                {{ post.published_at|date:"d.m.Y H:i" }} &bull; {{ post.author.get_full_name|default:post.author.email }}
+            </p>
+            <div class="card-text">
+                {{ post.content|linebreaks }}
+            </div>
+
+            {% if user == post.author %}
+                <div class="mt-4">
+                    <a href="{% url 'blog:post_edit' post.slug %}" class="btn btn-outline-primary btn-sm">Редактировать</a>
+                    <a href="{% url 'blog:post_delete' post.slug %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'blog:home' %}" class="btn btn-link mt-3">На главную</a>
+{% endblock %}

@@ -1,0 +1,42 @@
+# Виртуальное окружение
+.venv/
+venv/
+env/
+
+# База данных
+db.sqlite3
+*.sqlite3
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Линтеры и тесты
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Логи и временные файлы
+temp/
+*.log
+*.tmp
+
+# Секреты
+.env
+
+# Статика и медиа
+staticfiles/
+media/
+static/
+
+# IDE и OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
